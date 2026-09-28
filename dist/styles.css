@@ -296,7 +296,7 @@ main { overflow: clip; }
   .menu-toggle[aria-expanded="true"] i:first-of-type { translate: 0 4px; transform: rotate(45deg); }
   .menu-toggle[aria-expanded="true"] i:last-of-type { translate: 0 -4px; transform: rotate(-45deg); }
   .mobile-menu { position: fixed; z-index: -1; inset: 0; display: grid; align-content: space-between; padding: calc(var(--header-h) + 70px) 19px 38px; color: #fff; background: var(--ink); opacity: 0; visibility: hidden; transform: translateY(-15px); transition: opacity .3s, visibility .3s, transform .4s var(--ease); }
-  .mobile-menu.is-open { opacity: 1; visibility: visible; transform: none; }
+  .mobile-menu.is-open { opacity: 1 !important; visibility: visible !important; transform: none !important; transition: none; }
   .mobile-menu nav { display: grid; }
   .mobile-menu nav a { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--white-line); font-size: clamp(30px,6vw,52px); letter-spacing: -.05em; }
   .mobile-menu nav a span { color: var(--gold-light); font-size: 11px; letter-spacing: 0; }
@@ -305,7 +305,7 @@ main { overflow: clip; }
   .site-header.menu-active .brand img { filter: brightness(0) invert(1); }
 
   .hero { min-height: 1390px; }
-  .hero-copy { width: 100%; min-height: 470px; padding: 64px 19px 54px; }
+  .hero-copy { width: 100%; min-height: 470px; padding: 24px 19px 54px; }
   .hero h1 { max-width: 950px; font-size: clamp(48px,5.6vw,62px); }
   .hero-lede { max-width: 730px; margin: 32px 0; }
   .block-cta { width: min(100%, 620px); min-height: 82px; }
@@ -338,8 +338,8 @@ main { overflow: clip; }
   .section-pad { padding-block: 92px; }
   .section-index { font-size: 10px; }
   .hero { min-height: 1250px; }
-  .hero-copy { min-height: 460px; padding: 46px 12px 38px; }
-  .hero h1 { max-width: 620px; font-size: clamp(44px,10.2vw,72px); line-height: .98; }
+  .hero-copy { min-height: 460px; padding: 12px 12px 38px; }
+  .hero h1 { max-width: 620px; font-size: clamp(38px,6.5vw,50px); line-height: .98; }
   .hero-lede { max-width: 570px; margin: 28px 0; font-size: 17px; }
   .block-cta { width: calc(100% + 80px); margin-left: 28%; min-height: 74px; }
   .block-cta > span:first-child { padding-inline: 22px; font-size: 17px; }
