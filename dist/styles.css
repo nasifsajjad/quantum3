@@ -369,7 +369,7 @@ ul {
 .hero-visual > picture > img {
   object-fit: cover;
   object-position: center;
-  transform: scale(1.025);
+  transform: none;
 }
 
 .hero-proof {
@@ -1665,6 +1665,10 @@ ul {
     height: min(75vw, 768px);
   }
 
+  .hero-visual > picture > img {
+    transform: none;
+  }
+
   .hero-proof {
     width: 36%;
   }
@@ -2379,7 +2383,7 @@ ul {
   }
 
   .image-cta {
-    min-height: 800px;
+    min-height: 173vw;
   }
 
   .image-cta > picture {
