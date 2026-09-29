@@ -6,11 +6,21 @@
   <meta name="theme-color" content="#ebebed">
   <meta name="description" content="Quantum Software Solutions WLL provides cloud-based business software, AI solutions and operational systems for organisations in Bahrain and the GCC.">
   <title>Quantum Software Solutions WLL — Bahrain</title>
-  <link rel="preload" as="image" href="assets/quantum-hero-architecture.png">
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
 </head>
 <body>
+  <svg class="svg-symbols" aria-hidden="true" focusable="false">
+    <symbol id="icon-arrow-ne" viewBox="0 0 24 24">
+      <path d="M6 18 18 6M9 6h9v9"/>
+    </symbol>
+    <symbol id="icon-arrow-se" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M9 18h9V9"/>
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m6 10 6-6 6 6M12 4v16"/>
+    </symbol>
+  </svg>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" data-header>
@@ -24,7 +34,7 @@
       <a href="#classveew">Classveew</a>
       <a href="#about">About</a>
     </nav>
-    <a class="header-cta" href="#contact"><span>Start a conversation</span><span aria-hidden="true">↗</span></a>
+    <a class="header-cta" href="#contact"><span>Start a conversation</span><svg class="icon icon-arrow-ne" aria-hidden="true"><use href="#icon-arrow-ne"/></svg></a>
     <button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" data-menu-button>
       <span></span><span></span>
     </button>
@@ -52,12 +62,16 @@
         <p>Software, AI and operational systems for organisations that need clarity, control and room to grow.</p>
         <a class="block-link block-link--gold" href="#expertise">
           <span>Explore what we build</span>
-          <span aria-hidden="true">↘</span>
+          <svg class="icon icon-arrow-se" aria-hidden="true"><use href="#icon-arrow-se"/></svg>
         </a>
       </div>
 
       <div class="hero-visual" data-parallax="0.035">
-        <img src="assets/quantum-hero-architecture.png" alt="An original architectural interpretation of connected finance, people, healthcare and education systems">
+        <picture>
+          <source media="(max-width: 600px)" srcset="assets/quantum-hero-mobile.png">
+          <source media="(max-width: 1100px)" srcset="assets/quantum-hero-tablet.png">
+          <img src="assets/quantum-hero-architecture.png" alt="An original architectural interpretation of connected finance, people, healthcare and education systems">
+        </picture>
         <div class="hero-proof">
           <p>One connected provider</p>
           <ul>
@@ -207,7 +221,10 @@
         </div>
 
         <div class="intelligence-visual reveal">
-          <img src="assets/quantum-connected-intelligence.png" loading="lazy" alt="Original abstract visual of information moving through a connected business system" data-parallax="0.025">
+          <picture>
+            <source media="(max-width: 600px)" srcset="assets/quantum-connected-intelligence-mobile.png">
+            <img src="assets/quantum-connected-intelligence.png" loading="lazy" alt="Original abstract visual of information moving through a connected business system" data-parallax="0.025">
+          </picture>
           <div class="intelligence-cards">
             <article><span>01</span><h3>Business-focused</h3><p>AI framed around useful organisational needs.</p></article>
             <article><span>02</span><h3>Clear to use</h3><p>Capability explained without unnecessary technical theatre.</p></article>
@@ -315,12 +332,12 @@
           <p>A focused portfolio for businesses, institutions, schools, hospitals and clinics.</p>
         </div>
         <div class="service-grid reveal-group">
-          <article class="service-card"><span>01</span><h3>Software development</h3><p>Custom software and related development services shaped around organisational needs.</p><i aria-hidden="true">↗</i></article>
-          <article class="service-card"><span>02</span><h3>AI solutions</h3><p>Business-focused AI solutions kept broad, useful and credible.</p><i aria-hidden="true">↗</i></article>
-          <article class="service-card"><span>03</span><h3>AI support</h3><p>Practical AI-related support for organisations working with intelligent tools.</p><i aria-hidden="true">↗</i></article>
-          <article class="service-card"><span>04</span><h3>ERP &amp; accounting</h3><p>Finance, transactions, inventory, records and reporting in one cloud system.</p><i aria-hidden="true">↗</i></article>
-          <article class="service-card"><span>05</span><h3>Institution systems</h3><p>Focused management platforms for people teams, hospitals, clinics and schools.</p><i aria-hidden="true">↗</i></article>
-          <article class="service-card"><span>06</span><h3>Sales automation</h3><p>An offering for organisations that need a clearer, more consistent sales operation.</p><i aria-hidden="true">↗</i></article>
+          <article class="service-card"><span>01</span><h3>Software development</h3><p>Custom software and related development services shaped around organisational needs.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article class="service-card"><span>02</span><h3>AI solutions</h3><p>Business-focused AI solutions kept broad, useful and credible.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article class="service-card"><span>03</span><h3>AI support</h3><p>Practical AI-related support for organisations working with intelligent tools.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article class="service-card"><span>04</span><h3>ERP &amp; accounting</h3><p>Finance, transactions, inventory, records and reporting in one cloud system.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article class="service-card"><span>05</span><h3>Institution systems</h3><p>Focused management platforms for people teams, hospitals, clinics and schools.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article class="service-card"><span>06</span><h3>Sales automation</h3><p>An offering for organisations that need a clearer, more consistent sales operation.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
         </div>
       </div>
     </section>
@@ -354,11 +371,11 @@
           <h2 id="sectors-title">Built around how the organisation works.</h2>
         </div>
         <div class="sector-list reveal-group">
-          <article><span>01</span><h3>Retail &amp; wholesale</h3><p>Transactions, stock, customers and suppliers.</p><i>↗</i></article>
-          <article><span>02</span><h3>Manufacturing &amp; services</h3><p>Operational records and financial visibility.</p><i>↗</i></article>
-          <article><span>03</span><h3>Hospitals &amp; clinics</h3><p>Patients, appointments, billing and pharmacy.</p><i>↗</i></article>
-          <article><span>04</span><h3>Schools</h3><p>Academic administration and communication.</p><i>↗</i></article>
-          <article><span>05</span><h3>SMEs &amp; institutions</h3><p>Practical cloud systems for organised growth.</p><i>↗</i></article>
+          <article><span>01</span><h3>Retail &amp; wholesale</h3><p>Transactions, stock, customers and suppliers.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article><span>02</span><h3>Manufacturing &amp; services</h3><p>Operational records and financial visibility.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article><span>03</span><h3>Hospitals &amp; clinics</h3><p>Patients, appointments, billing and pharmacy.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article><span>04</span><h3>Schools</h3><p>Academic administration and communication.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
+          <article><span>05</span><h3>SMEs &amp; institutions</h3><p>Practical cloud systems for organised growth.</p><i aria-hidden="true"><svg class="icon icon-arrow-ne"><use href="#icon-arrow-ne"/></svg></i></article>
         </div>
       </div>
     </section>
@@ -400,11 +417,14 @@
     </section>
 
     <section class="image-cta" aria-labelledby="image-cta-title">
-      <img src="assets/quantum-cta-architecture.png" loading="lazy" alt="Original abstract architectural scene with warm light and a clear path forward" data-parallax="0.018">
+      <picture>
+        <source media="(max-width: 820px)" srcset="assets/quantum-cta-mobile.png">
+        <img src="assets/quantum-cta-architecture.png" loading="lazy" alt="Original abstract architectural scene with warm light and a clear path forward" data-parallax="0.018">
+      </picture>
       <div class="image-cta-copy reveal">
         <h2 id="image-cta-title">You already have enough systems to manage. Your software should make the work clearer.</h2>
         <p>Start with the operation that needs attention most. Build from there with one capable partner.</p>
-        <a class="block-link block-link--gold" href="#contact"><span>Start a conversation</span><span>↘</span></a>
+        <a class="block-link block-link--gold" href="#contact"><span>Start a conversation</span><svg class="icon icon-arrow-se" aria-hidden="true"><use href="#icon-arrow-se"/></svg></a>
       </div>
     </section>
 
@@ -421,7 +441,7 @@
             <span>Software development</span><span>AI solutions or support</span><span>Operational systems</span><span>Classveew</span>
           </div>
           <a class="block-link block-link--dark" href="https://quantumbh.net/" target="_blank" rel="noopener">
-            <span>Continue on quantumbh.net</span><span aria-hidden="true">↗</span>
+            <span>Continue on quantumbh.net</span><svg class="icon icon-arrow-ne" aria-hidden="true"><use href="#icon-arrow-ne"/></svg>
           </a>
           <small>Quantum Software Solutions WLL · Kingdom of Bahrain · CR 197818-1</small>
         </div>
@@ -453,12 +473,12 @@
         <h3>Company</h3>
         <p>Kingdom of Bahrain</p>
         <p>CR 197818-1</p>
-        <a href="https://quantumbh.net/" target="_blank" rel="noopener">quantumbh.net ↗</a>
+        <a class="text-icon-link" href="https://quantumbh.net/" target="_blank" rel="noopener"><span>quantumbh.net</span><svg class="icon icon-arrow-ne" aria-hidden="true"><use href="#icon-arrow-ne"/></svg></a>
       </div>
     </div>
     <div class="footer-bottom">
       <p>© <span data-year>2026</span> Quantum Software Solutions WLL</p>
-      <a href="#top">Back to top ↑</a>
+      <a class="text-icon-link" href="#top"><span>Back to top</span><svg class="icon icon-arrow-up" aria-hidden="true"><use href="#icon-arrow-up"/></svg></a>
     </div>
   </footer>
 </body>
