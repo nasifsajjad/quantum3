@@ -1,154 +1,225 @@
 (() => {
+  'use strict';
+
+  const doc = document;
+  const body = doc.body;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const header = document.querySelector('[data-header]');
-  const progress = document.querySelector('.scroll-progress span');
-  const menuButton = document.querySelector('.menu-toggle');
-  const mobileMenu = document.querySelector('.mobile-menu');
 
-  const updateScrollUI = () => {
-    const y = window.scrollY;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    header?.classList.toggle('is-scrolled', y > 20);
-    if (progress) progress.style.width = `${max > 0 ? (y / max) * 100 : 0}%`;
+  const menuButton = doc.querySelector('[data-menu-button]');
+  const menuPanel = doc.querySelector('[data-menu-panel]');
+
+  const closeMenu = () => {
+    if (!menuButton || !menuPanel) return;
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-label', 'Open menu');
+    menuPanel.classList.remove('is-open');
+    menuPanel.setAttribute('aria-hidden', 'true');
+    body.classList.remove('menu-open');
   };
 
-  updateScrollUI();
-  window.addEventListener('scroll', updateScrollUI, { passive: true });
+  if (menuButton && menuPanel) {
+    menuButton.addEventListener('click', () => {
+      const open = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', String(!open));
+      menuButton.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+      menuPanel.classList.toggle('is-open', !open);
+      menuPanel.setAttribute('aria-hidden', String(open));
+      body.classList.toggle('menu-open', !open);
+    });
 
-  const setMenu = (open) => {
-    menuButton?.setAttribute('aria-expanded', String(open));
-    mobileMenu?.setAttribute('aria-hidden', String(!open));
-    mobileMenu?.classList.toggle('is-open', open);
-    header?.classList.toggle('menu-active', open);
-    document.body.classList.toggle('menu-open', open);
-  };
+    menuPanel.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
 
-  menuButton?.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
-  mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMenu(false)));
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') setMenu(false);
-  });
-
-  document.querySelectorAll('[data-delay]').forEach((element) => {
-    element.style.setProperty('--delay', `${element.dataset.delay}ms`);
-  });
-
-  if (reduceMotion) {
-    document.querySelectorAll('.reveal').forEach((element) => element.classList.add('is-visible'));
-  } else {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
-    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
+    doc.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMenu();
+    });
   }
 
-  const expertiseData = {
-    build: {
-      kicker: 'Custom software',
-      title: 'Software shaped around your organisation.',
-      copy: 'Custom software development for business needs that off-the-shelf tools do not address cleanly.',
-      links: ['Custom software development', 'Cloud-based solutions', 'Business-focused delivery']
-    },
-    intelligence: {
-      kicker: 'Applied intelligence',
-      title: 'AI that supports useful work.',
-      copy: 'Business-focused AI solutions and practical AI-related support, explained clearly and applied with purpose.',
-      links: ['AI solutions', 'AI support', 'Business process intelligence']
-    },
-    operate: {
-      kicker: 'Operational systems',
-      title: 'The essential systems, working together.',
-      copy: 'Cloud-first software for finance, people, healthcare, education and sales operations under one capable provider.',
-      links: ['ERP & accounting', 'HR management', 'Hospital & school systems']
+  const activateTabs = (rootSelector, tabSelector, panelSelector, name) => {
+    const root = doc.querySelector(rootSelector);
+    if (!root) return;
+
+    const tabs = [...root.querySelectorAll(tabSelector)];
+    const panels = [...root.querySelectorAll(panelSelector)];
+
+    const activate = (key, focus = false) => {
+      tabs.forEach((tab) => {
+        const selected = tab.dataset[name + 'Tab'] === key;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        if (selected && focus) tab.focus();
+      });
+
+      panels.forEach((panel) => {
+        const selected = panel.dataset[name + 'Panel'] === key;
+        panel.hidden = !selected;
+        panel.classList.toggle('is-active', selected);
+      });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(tab.dataset[name + 'Tab']));
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        let next = index;
+        if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') next = 0;
+        if (event.key === 'End') next = tabs.length - 1;
+        activate(tabs[next].dataset[name + 'Tab'], true);
+      });
+    });
+
+    return { root, tabs, panels, activate };
+  };
+
+  activateTabs('[data-expertise]', '[data-expertise-tab]', '[data-expertise-panel]', 'expertise');
+
+  const systems = activateTabs('[data-systems]', '[data-system-tab]', '[data-system-panel]', 'system');
+  const systemProgress = doc.querySelector('[data-system-progress]');
+  let systemIndex = 0;
+  let systemTimer = null;
+  let systemsInView = false;
+  let systemsPaused = false;
+
+  const restartProgress = () => {
+    if (!systemProgress || reduceMotion || systemsPaused || !systemsInView) return;
+    systemProgress.classList.remove('is-running');
+    void systemProgress.offsetWidth;
+    systemProgress.classList.add('is-running');
+  };
+
+  const selectSystem = (index, userInitiated = false) => {
+    if (!systems) return;
+    systemIndex = (index + systems.tabs.length) % systems.tabs.length;
+    systems.activate(systems.tabs[systemIndex].dataset.systemTab);
+    if (userInitiated) systemsPaused = true;
+    restartProgress();
+  };
+
+  if (systems) {
+    systems.tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectSystem(index, true));
+      tab.addEventListener('focus', () => {
+        if (tab.matches(':focus-visible')) systemsPaused = true;
+      });
+    });
+
+    if (!reduceMotion) {
+      const systemsObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          systemsInView = entry.isIntersecting && entry.intersectionRatio > 0.28;
+          if (systemsInView && !systemsPaused) {
+            restartProgress();
+            clearInterval(systemTimer);
+            systemTimer = setInterval(() => selectSystem(systemIndex + 1), 6000);
+          } else {
+            clearInterval(systemTimer);
+            systemProgress?.classList.remove('is-running');
+          }
+        });
+      }, { threshold: [0, 0.28, 0.6] });
+      systemsObserver.observe(systems.root);
     }
-  };
+  }
 
-  const expertisePanel = document.querySelector('.expertise-panel');
-  const updateExpertise = (key) => {
-    const data = expertiseData[key];
-    if (!data || !expertisePanel) return;
-    expertisePanel.animate?.([
-      { opacity: .55, transform: 'translateY(8px)' },
-      { opacity: 1, transform: 'translateY(0)' }
-    ], { duration: reduceMotion ? 1 : 360, easing: 'cubic-bezier(.2,.75,.2,1)' });
-    expertisePanel.querySelector('[data-expertise-kicker]').textContent = data.kicker;
-    expertisePanel.querySelector('[data-expertise-title]').textContent = data.title;
-    expertisePanel.querySelector('[data-expertise-copy]').textContent = data.copy;
-    expertisePanel.querySelector('[data-expertise-links]').innerHTML = data.links.map((item) => `<span>${item}</span>`).join('');
-  };
-
-  document.querySelectorAll('.expertise-tab').forEach((button) => {
+  const faqItems = [...doc.querySelectorAll('.faq-item')];
+  faqItems.forEach((item) => {
+    const button = item.querySelector('button');
+    if (!button) return;
     button.addEventListener('click', () => {
-      document.querySelectorAll('.expertise-tab').forEach((item) => {
-        const active = item === button;
-        item.classList.toggle('is-active', active);
-        item.setAttribute('aria-selected', String(active));
+      const willOpen = !item.classList.contains('is-open');
+      faqItems.forEach((other) => {
+        other.classList.remove('is-open');
+        other.querySelector('button')?.setAttribute('aria-expanded', 'false');
       });
-      updateExpertise(button.dataset.expertise);
+      if (willOpen) {
+        item.classList.add('is-open');
+        button.setAttribute('aria-expanded', 'true');
+      }
     });
   });
 
-  const systemData = {
-    erp: {
-      kicker: 'FINANCE / OVERVIEW', title: 'Business at a glance', chart: 'Cash flow', list: 'Recent activity',
-      kpis: [['Cash position','Clear','74%'],['Receivables','Tracked','58%'],['Stock status','Current','86%']],
-      rows: [['Invoice issued','Today'],['Supplier payment','Today'],['Stock movement','Yesterday'],['Bank transaction','Yesterday']]
-    },
-    hr: {
-      kicker: 'PEOPLE / OVERVIEW', title: 'Your team, organised', chart: 'Attendance', list: 'People updates',
-      kpis: [['Employee records','Current','82%'],['Payroll','Prepared','66%'],['Leave','Visible','72%']],
-      rows: [['Attendance recorded','Today'],['Leave request','Today'],['Payroll review','This week'],['Employee record','Updated']]
-    },
-    hospital: {
-      kicker: 'CARE / OPERATIONS', title: 'Care operations in view', chart: 'Appointments', list: 'Clinical workflow',
-      kpis: [['Patient records','Ready','88%'],['Appointments','Scheduled','70%'],['Billing','Tracked','61%']],
-      rows: [['Patient checked in','Now'],['Appointment confirmed','Today'],['Pharmacy request','Today'],['Billing record','Updated']]
-    },
-    school: {
-      kicker: 'CLASSVEEW / SCHOOL', title: 'The school day, connected', chart: 'Attendance', list: 'Academic activity',
-      kpis: [['Admissions','Organised','78%'],['Gradebook','Updated','83%'],['Timetable','Published','91%']],
-      rows: [['Attendance posted','Today'],['Gradebook updated','Today'],['Timetable change','Tomorrow'],['Parent message','New']]
+  const revealTargets = [...doc.querySelectorAll('.reveal, .reveal-group')];
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealTargets.forEach((target) => target.classList.add('is-visible'));
+  } else {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.13, rootMargin: '0px 0px -7% 0px' });
+    revealTargets.forEach((target) => revealObserver.observe(target));
+  }
+
+  const parallaxItems = [...doc.querySelectorAll('[data-parallax]')];
+  let parallaxFrame = 0;
+
+  const updateParallax = () => {
+    parallaxFrame = 0;
+    if (reduceMotion || window.innerWidth < 760) return;
+    parallaxItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      if (rect.bottom < -200 || rect.top > window.innerHeight + 200) return;
+      const speed = Number(item.dataset.parallax || 0);
+      const offset = (rect.top + rect.height * 0.5 - window.innerHeight * 0.5) * speed;
+      item.style.transform = 'translate3d(0,' + offset.toFixed(2) + 'px,0)';
+    });
+  };
+
+  const requestParallax = () => {
+    if (parallaxFrame) return;
+    parallaxFrame = requestAnimationFrame(updateParallax);
+  };
+
+  if (!reduceMotion) {
+    window.addEventListener('scroll', requestParallax, { passive: true });
+    window.addEventListener('resize', requestParallax);
+    requestParallax();
+  }
+
+  const header = doc.querySelector('[data-header]');
+  let lastScroll = window.scrollY;
+  let headerFrame = 0;
+
+  const updateHeader = () => {
+    headerFrame = 0;
+    if (!header) return;
+    const current = window.scrollY;
+    header.classList.toggle('is-scrolled', current > 24);
+    if (window.innerWidth > 1100 && current > 700 && current > lastScroll + 10) {
+      header.classList.add('is-hidden');
+    } else if (current < lastScroll - 8 || current < 700) {
+      header.classList.remove('is-hidden');
     }
+    lastScroll = current;
   };
 
-  const systemWindow = document.querySelector('[data-system-window]');
-  const updateSystem = (key) => {
-    const data = systemData[key];
-    if (!data || !systemWindow) return;
-    systemWindow.querySelector('[data-system-kicker]').textContent = data.kicker;
-    systemWindow.querySelector('[data-system-title]').textContent = data.title;
-    systemWindow.querySelector('[data-chart-label]').textContent = data.chart;
-    systemWindow.querySelector('[data-list-label]').textContent = data.list;
-    systemWindow.querySelector('[data-system-kpis]').innerHTML = data.kpis.map(([label,value,fill]) => `<article><span>${label}</span><strong>${value}</strong><i style="--fill:${fill}"></i></article>`).join('');
-    systemWindow.querySelector('[data-system-list]').innerHTML = data.rows.map(([label,time]) => `<li><b>${label}</b><span>${time}</span></li>`).join('');
-    systemWindow.animate?.([
-      { opacity: .7, transform: 'translateY(6px)' },
-      { opacity: 1, transform: 'translateY(0)' }
-    ], { duration: reduceMotion ? 1 : 320, easing: 'cubic-bezier(.2,.75,.2,1)' });
-  };
+  window.addEventListener('scroll', () => {
+    if (!headerFrame) headerFrame = requestAnimationFrame(updateHeader);
+  }, { passive: true });
 
-  document.querySelectorAll('.system-tab').forEach((button) => {
-    button.addEventListener('click', () => {
-      document.querySelectorAll('.system-tab').forEach((item) => {
-        const active = item === button;
-        item.classList.toggle('is-active', active);
-        item.setAttribute('aria-selected', String(active));
-      });
-      updateSystem(button.dataset.system);
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 1100) closeMenu();
+    header?.classList.remove('is-hidden');
+  });
+
+  doc.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const id = link.getAttribute('href');
+      if (!id || id === '#') return;
+      const target = doc.querySelector(id);
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      history.replaceState(null, '', id);
     });
   });
 
-  document.querySelectorAll('.faq-list details').forEach((detail) => {
-    detail.addEventListener('toggle', () => {
-      if (!detail.open) return;
-      document.querySelectorAll('.faq-list details').forEach((other) => {
-        if (other !== detail) other.open = false;
-      });
-    });
-  });
+  const year = doc.querySelector('[data-year]');
+  if (year) year.textContent = String(new Date().getFullYear());
 })();
